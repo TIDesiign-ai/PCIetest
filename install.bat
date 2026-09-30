@@ -1,4 +1,3 @@
-```bat
 @echo off
 setlocal
 
@@ -12,18 +11,17 @@ echo.
 python --version
 if errorlevel 1 (
     echo [ERROR] Pythonが見つかりません。
-    echo Python 3.10以降をインストールしてください。
     pause
     exit /b 1
 )
 
 echo.
-echo [1/2] 必要なパッケージをインストールしています...
+echo [1/2] パッケージをインストールしています...
 python -m pip install --user fastapi "uvicorn[standard]" requests
 
 if errorlevel 1 (
     echo.
-    echo [ERROR] パッケージのインストールに失敗しました。
+    echo [ERROR] インストールに失敗しました。
     pause
     exit /b 1
 )
@@ -31,12 +29,13 @@ if errorlevel 1 (
 echo.
 echo [2/2] FastAPIを起動します...
 echo.
-echo 終了するには Ctrl+C を押してください。
+echo Server: http://0.0.0.0:8000
+echo Swagger: http://localhost:8000/docs
+echo.
+echo 終了するには Ctrl+C
 echo.
 
-python main.py
+python -m uvicorn main:app --host 0.0.0.0 --port 8000
 
-echo.
-echo FastAPIが終了しました。
 pause
-```
+
