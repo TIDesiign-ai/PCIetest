@@ -9,7 +9,7 @@ import uvicorn
 app = FastAPI()
 
 # 相手PCのIPアドレス
-TARGET_IP = "192.168.1.20"
+TARGET_IP = "172.68.100.x"
 TARGET_PORT = 8000
 
 INTERVAL = 1.0
