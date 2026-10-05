@@ -4,26 +4,29 @@ from pathlib import Path
 import requests
 
 
-CONFIG_FILE = Path("client_config.json")
+CONFIG_FILE = Path(__file__).resolve().parent / "config.json"
 
 
 def load_config():
     if CONFIG_FILE.exists():
         with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+            config = json.load(f)
+    else:
+        config = {}
 
-    server_url = input("Server URL: ").strip()
+    if "client" not in config:
+        server_url = input("Server URL: ").strip()
 
-    config = {
-        "server_url": server_url
-    }
+        config["client"] = {
+            "server_url": server_url
+        }
 
-    with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-        json.dump(config, f, indent=4, ensure_ascii=False)
+        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
+            json.dump(config, f, indent=4, ensure_ascii=False)
 
-    print("Config saved.")
+        print("Client config saved.")
 
-    return config
+    return config["client"]
 
 
 def send(data: dict, server_url: str):
@@ -40,15 +43,16 @@ def send(data: dict, server_url: str):
 
 if __name__ == "__main__":
     config = load_config()
-    server_url = config["server_url"]
 
     message = input("Message: ")
 
-    data = {
-        "message": message
-    }
+    result = send(
+        {"message": message},
+        config["server_url"]
+    )
 
-    result = send(data, server_url)
-
-    print("Response:")
-    print(json.dumps(result, indent=4, ensure_ascii=False))
+    print(json.dumps(
+        result,
+        indent=4,
+        ensure_ascii=False
+    ))
