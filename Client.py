@@ -1,13 +1,28 @@
+import json
 import requests
 
 
-url = "http://192.168.1.100:8000/api"
+with open("config.json", "r", encoding="utf-8") as f:
+    config = json.load(f)
 
-data = {
-    "message": "Hello",
+SERVER_URL = config["server_url"]
+
+
+def send(data: dict) -> dict:
+    response = requests.post(
+        f"{SERVER_URL}/api",
+        json=data,
+        timeout=10
+    )
+
+    response.raise_for_status()
+
+    return response.json()
+
+
+result = send({
+    "message": "Hello Server",
     "value": 123
-}
+})
 
-response = requests.post(url, json=data)
-
-print(response.json())
+print(result)
